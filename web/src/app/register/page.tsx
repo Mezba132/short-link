@@ -46,6 +46,17 @@ export default function RegisterPage() {
           className="border p-2 mb-4 w-full"
           required
         />
+        <p className="text-sm p-2 mb-4">
+          Already have an account?{" "}
+          <span
+            className=" text-blue-500 cursor-pointer"
+            onClick={() => {
+              router.push("/login");
+            }}
+          >
+            Log in
+          </span>
+        </p>
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded"

@@ -28,6 +28,10 @@ export default function LoginPage() {
     }
   };
 
+  const handleGuestLogin = () => {
+    router.push("/guest");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form onSubmit={handleSubmit} className="p-6 bg-white shadow-md rounded">
@@ -48,6 +52,23 @@ export default function LoginPage() {
           className="border p-2 mb-4 w-full"
           required
         />
+        <p
+          className="text-sm p-2 text-blue-500 cursor-pointer"
+          onClick={handleGuestLogin}
+        >
+          Guest User
+        </p>
+        <p className="text-sm p-2 mb-4">
+          Don't have an account?{" "}
+          <span
+            className=" text-blue-500 cursor-pointer"
+            onClick={() => {
+              router.push("/register");
+            }}
+          >
+            Sign Up
+          </span>
+        </p>
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded"

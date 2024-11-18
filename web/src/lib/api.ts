@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   getAccessToken,
   getRefreshToken,
+  getUserId,
   removeTokens,
   setTokens,
 } from "./auth";
@@ -26,13 +27,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = getRefreshToken();
+        const userId: any = getUserId();
         const { data } = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
           { refreshToken }
         );
         let accessToken = data.data.accessToken;
         let updateRefreshToken = data.data.refreshToken;
-        setTokens(accessToken, updateRefreshToken);
+        setTokens(accessToken, updateRefreshToken, userId);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {

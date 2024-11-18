@@ -26,7 +26,6 @@ export default function ShowLink() {
         }
 
         const response = await api.get(`links`);
-        console.log(response);
 
         if (response?.data?.success) {
           console.log(response.data);
@@ -92,13 +91,29 @@ export default function ShowLink() {
                 <td className="border border-gray-300 px-4 py-2">
                   {link.originalUrl}
                 </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <a href={link.originalUrl}>
-                    http://localhost:3000/{link.alias}
-                  </a>
+                <td
+                  className="border border-gray-300 px-4 py-2 cursor-pointer"
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      "http://localhost:5000/api/" + link.alias || ""
+                    )
+                  }
+                  title="Click to copy"
+                >
+                  http://localhost:5000/api/{link.alias}
                 </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {link.customAlias}
+                <td
+                  className="border border-gray-300 px-4 py-2 cursor-pointer"
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      "http://localhost:5000/api/" + link.customAlias || ""
+                    )
+                  }
+                  title="Click to copy"
+                >
+                  {link.customAlias
+                    ? `http://localhost:5000/api/${link.customAlias}`
+                    : ""}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
                   {new Date(link.expiresAt).toLocaleString()}
