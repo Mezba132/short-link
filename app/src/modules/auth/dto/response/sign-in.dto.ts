@@ -26,5 +26,5 @@ export class SignInResponse {
   refreshToken: string;
 
   @IsNotEmpty()
-  data: User;
+  userInfo: User;
 }

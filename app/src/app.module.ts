@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { CheckTokenMiddleware } from './middleware/checkToken.middleware';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -16,10 +17,12 @@ import { CheckTokenMiddleware } from './middleware/checkToken.middleware';
     MongooseModule.forRoot(process.env.MONGO_URI),
     AuthModule,
     LinkModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
 })
+// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
@@ -27,6 +30,7 @@ export class AppModule implements NestModule {
       .exclude(
         { path: 'auth/register/new', method: RequestMethod.POST },
         { path: 'auth/login', method: RequestMethod.POST },
+        { path: 'auth/refresh', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

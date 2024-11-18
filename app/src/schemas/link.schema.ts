@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { User } from './user.schema';
 
 @Schema({ timestamps: true })
 export class Link extends Document {
@@ -13,13 +14,20 @@ export class Link extends Document {
   customAlias?: string;
 
   @Prop({ default: false })
-  isPrivate: boolean;
+  isPrivate?: boolean;
 
   @Prop({ required: true })
   expiresAt: Date;
 
   @Prop({ default: 0 })
   visitCount: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
+  })
+  user?: User;
 
   @Prop({ default: true })
   isActive: boolean;

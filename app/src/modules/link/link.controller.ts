@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Redirect } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,16 +23,34 @@ export class LinkController {
     return this.linkService.createLink(createLinkDto);
   }
 
-  @ApiOperation({ summary: 'Redirect to the original URL using alias' })
+  @ApiOperation({ summary: 'Redirect to the original URL' })
   @ApiResponse({ status: 302, description: 'Redirect to the original URL.' })
   @ApiResponse({ status: 404, description: 'Alias not found or expired.' })
-  @Get(':alias')
-  @Redirect()
-  async redirectToOriginal(
-    @Param('alias') alias: string,
-  ): Promise<{ url: string }> {
+  @ApiBearerAuth()
+  @Get('link/:alias')
+  async redirectToOriginal(@Param('alias') alias: string): Promise<Link> {
     await this.linkService.incrementVisitCount(alias);
-    const link = await this.linkService.getLink(alias);
-    return { url: link.originalUrl };
+    return await this.linkService.getLink(alias);
+  }
+
+  @ApiOperation({ summary: 'Fetch all link' })
+  @ApiResponse({ status: 302, description: 'Successfully Fetch all link.' })
+  @ApiResponse({ status: 404, description: 'link not found' })
+  @ApiBearerAuth()
+  @Get('links')
+  async getAllLink() {
+    return await this.linkService.getAllLink();
+  }
+
+  @ApiOperation({ summary: 'Fetch all link by user id' })
+  @ApiResponse({
+    status: 302,
+    description: 'Successfully Fetch all link by user id',
+  })
+  @ApiResponse({ status: 404, description: 'link not found' })
+  @ApiBearerAuth()
+  @Get('link/user/:id')
+  async getAllLinkByUser(@Param('id') id: string) {
+    return await this.linkService.getAllLinkByUser(id);
   }
 }

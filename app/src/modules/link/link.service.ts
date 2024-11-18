@@ -18,7 +18,7 @@ export class LinkService {
     this.uid = new ShortUniqueId({ length: 15 });
   }
 
-  async createLink(body: CreateLinkDto): Promise<Link> {
+  createLink = async (body: CreateLinkDto): Promise<Link> => {
     let { customAlias, expiresAt, ...rest } = body;
     const alias = this.uid.rnd();
     customAlias = customAlias?.toLowerCase().replace(/ /g, '-');
@@ -58,9 +58,9 @@ export class LinkService {
       }
       throw new Error(`Failed to save link: ${error.message}`);
     }
-  }
+  };
 
-  async getLink(aliasOrCustomAlias: string): Promise<Link> {
+  getLink = async (aliasOrCustomAlias: string): Promise<Link> => {
     const link = await this.linkModel
       .findOne({
         $or: [
@@ -75,9 +75,27 @@ export class LinkService {
     }
 
     return link;
-  }
+  };
 
-  async incrementVisitCount(aliasOrCustomAlias: string): Promise<void> {
+  getAllLinkByUser = async (id: string) => {
+    const links = await this.linkModel.find({ user: id }).exec();
+
+    if (links.length === 0) {
+      throw new NotFoundException('Links not found');
+    }
+    return links;
+  };
+
+  getAllLink = async () => {
+    const links = await this.linkModel.find({}).exec();
+
+    if (links.length === 0) {
+      throw new NotFoundException('Links not found');
+    }
+    return links;
+  };
+
+  incrementVisitCount = async (aliasOrCustomAlias: string): Promise<void> => {
     const result = await this.linkModel
       .updateOne(
         {
@@ -93,5 +111,5 @@ export class LinkService {
     if (result.matchedCount === 0) {
       throw new NotFoundException('Alias not found');
     }
-  }
+  };
 }

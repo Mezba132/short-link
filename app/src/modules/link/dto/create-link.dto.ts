@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
@@ -7,6 +8,7 @@ import {
   IsUrl,
   Length,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateLinkDto {
   @ApiProperty({
@@ -35,6 +37,14 @@ export class CreateLinkDto {
   @IsOptional()
   @IsDateString()
   expiresAt?: Date;
+
+  @ApiProperty({
+    example: '67399e9c7517693c171697e6',
+    required: true,
+  })
+  @IsOptional()
+  @Type(() => Types.ObjectId)
+  user?: Types.ObjectId;
 
   @ApiPropertyOptional({
     description: 'Whether the link should be private',

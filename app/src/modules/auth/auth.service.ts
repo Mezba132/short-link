@@ -35,7 +35,6 @@ export class AuthService {
       .select('_id name email password')
       .exec();
 
-    console.log(verifiedUser);
     if (!verifiedUser) throw new NotFoundException(`User ${email} Not Found`);
 
     const passwordCheck = bcrypt.compareSync(password, verifiedUser.password);
@@ -90,7 +89,7 @@ export class AuthService {
       return {
         accessToken: generateToken.accessToken,
         refreshToken: generateToken.refreshToken,
-        data: body.data,
+        userInfo: body.data,
       };
     } catch (error) {
       throw new UnauthorizedException();
@@ -107,6 +106,8 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
     await this.authModel.findByIdAndUpdate(_id, { refreshToken });
+    console.log('accessToken - ', accessToken);
+    console.log('refreshToken - ', refreshToken);
     return { accessToken, refreshToken };
   }
 
@@ -119,13 +120,13 @@ export class AuthService {
       })
       .exec();
 
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException('Refresh Token Not Valid');
     let data = {
       _id: user._id as Types.ObjectId,
       name: user.name,
       email: user.email,
     };
-
+    console.log('refresh token calling......');
     return this.generateTokens(data);
   }
 

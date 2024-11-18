@@ -28,8 +28,7 @@ export class CheckTokenMiddleware implements NestMiddleware {
       const decodedToken: any = jwt.verify(accessToken, 'JwtSecret');
 
       const currentTime = Math.floor(Date.now() / 1000);
-      console.log('currentTime', currentTime);
-      console.log('ExpireTime', decodedToken.exp);
+      console.log('Middleware');
 
       if (decodedToken.exp < currentTime) {
         throw new UnauthorizedException('Token has expired');
