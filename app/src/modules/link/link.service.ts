@@ -16,7 +16,7 @@ export class LinkService {
   private uid: ShortUniqueId;
 
   constructor(@InjectModel(Link.name) private linkModel: Model<Link>) {
-    this.uid = new ShortUniqueId({ length: 15 });
+    this.uid = new ShortUniqueId({ length: 10 });
   }
 
   createLink = async (body: CreateLinkDto): Promise<Link> => {

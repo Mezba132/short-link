@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { EndPoint } from "@/utility/end-points";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -11,7 +12,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/auth/register/new", form);
+      await api.post(EndPoint.SIGN_UP, form);
       router.push("/login");
     } catch (error) {
       console.error(error);
@@ -21,7 +22,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form onSubmit={handleSubmit} className="p-6 bg-white shadow-md rounded">
-        <h2 className="text-2xl font-bold mb-4">Register</h2>
+        <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
         <input
           type="text"
           placeholder="Full Name"
@@ -54,7 +55,7 @@ export default function RegisterPage() {
               router.push("/login");
             }}
           >
-            Log in
+            Sign In
           </span>
         </p>
         <button

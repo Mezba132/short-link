@@ -17,7 +17,7 @@ export default function profile() {
 
       try {
         let userId = getUserId();
-        let user = await api.get(`/user/${userId}`);
+        let user = await api.get(`user/${userId}`);
         console.log("User here", user.data.data);
         setUserInfo(user.data.data);
       } catch (error) {
@@ -30,17 +30,17 @@ export default function profile() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="p-6 bg-white shadow-md rounded w-80">
+      <div className="p-6 bg-white shadow-md rounded w-2/4">
         <h1 className="text-2xl font-bold text-center mb-4">User Info</h1>
-        <div className="mb-4">
+        <div className="mb-4 flex justify-between">
           <p className="text-gray-600 text-sm">ID:</p>
           <p className="text-gray-800 font-semibold">{userInfo._id}</p>
         </div>
-        <div className="mb-4">
+        <div className="mb-4 flex justify-between">
           <p className="text-gray-600 text-sm">Name:</p>
           <p className="text-gray-800 font-semibold">{userInfo.name}</p>
         </div>
-        <div className="mb-4">
+        <div className="mb-4 flex justify-between">
           <p className="text-gray-600 text-sm">Email:</p>
           <p className="text-gray-800 font-semibold">{userInfo.email}</p>
         </div>

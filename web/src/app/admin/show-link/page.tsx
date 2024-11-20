@@ -1,8 +1,9 @@
 "use client";
 import api from "@/lib/api";
-import { getUserId, isAuthenticated } from "@/lib/auth";
+import { getUserId, getUserRole, isAuthenticated } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { EndPoint } from "@/utility/end-points";
 
 export default function ShowLink() {
   const router = useRouter();
@@ -13,8 +14,14 @@ export default function ShowLink() {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
+        let role = getUserRole();
         if (!isAuthenticated()) {
           router.push("/login");
+          return;
+        }
+
+        if (role !== "admin" && role !== "super_admin") {
+          router.push("/");
           return;
         }
 
@@ -25,12 +32,12 @@ export default function ShowLink() {
           return;
         }
 
-        const response = await api.get(`links`);
+        const response = await api.get(EndPoint.ALL_LINKS);
 
         if (response?.data?.success) {
           console.log(response.data);
           setLinkData(response.data.data || []);
-          setError(null); // Clear any previous errors
+          setError(null);
         } else {
           setError(response?.data?.message || "Failed to fetch links.");
         }

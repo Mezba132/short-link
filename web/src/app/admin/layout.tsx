@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -12,7 +11,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen">
       <aside className="w-64 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-4">Dashboard</h2>
+        <h2 className="text-lg font-bold mb-4">Admin</h2>
         <nav className="flex flex-col space-y-2">
           <Link href="/admin/create-link">
             <button

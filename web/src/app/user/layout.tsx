@@ -13,7 +13,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen">
       <aside className="w-64 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-4">Dashboard</h2>
+        <h2 className="text-lg font-bold mb-4">User</h2>
         <nav className="flex flex-col space-y-2">
           <Link href="/user/create-link">
             <button

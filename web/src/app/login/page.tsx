@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { setTokens } from "@/lib/auth";
+import { EndPoint } from "@/utility/end-points";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
-    email: "johndoe@example.com",
+    email: "johndoe@mail.com",
     password: "Password123!",
   });
   const router = useRouter();
@@ -14,15 +15,24 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await api.post("/auth/login", form);
+      const { data } = await api.post(EndPoint.SIGN_IN, form);
       if (data.success) {
         setTokens(
           data.data.accessToken,
           data.data.refreshToken,
-          data.data.userInfo._id
+          data.data.userInfo._id,
+          data.data.userInfo.role
         );
+        if (data.data.userInfo.role === "user") {
+          router.push("/user");
+        }
+        if (
+          data.data.userInfo.role === "admin" ||
+          data.data.userInfo.role === "super_admin"
+        ) {
+          router.push("/admin");
+        }
       }
-      router.push("/user");
     } catch (error) {
       console.error(error);
     }
@@ -35,7 +45,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form onSubmit={handleSubmit} className="p-6 bg-white shadow-md rounded">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <h2 className="text-2xl font-bold mb-4">Sign In</h2>
         <input
           type="email"
           placeholder="Email"

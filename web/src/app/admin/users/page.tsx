@@ -1,20 +1,27 @@
 "use client";
 import api from "@/lib/api";
-import { getUserId, isAuthenticated } from "@/lib/auth";
+import { getUserId, getUserRole, isAuthenticated } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { EndPoint } from "@/utility/end-points";
 
 export default function User() {
   const router = useRouter();
-  const [linkData, setLinkData] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLinks = async () => {
       try {
+        let role = getUserRole();
         if (!isAuthenticated()) {
           router.push("/login");
+          return;
+        }
+
+        if (role !== "admin" && role !== "super_admin") {
+          router.push("/");
           return;
         }
 
@@ -25,19 +32,17 @@ export default function User() {
           return;
         }
 
-        const response = await api.get(`users`);
-        console.log(response);
+        const response = await api.get(EndPoint.ALL_USERS);
 
         if (response?.data?.success) {
-          console.log(response.data);
-          setLinkData(response.data.data || []);
-          setError(null); // Clear any previous errors
+          setUserData(response.data.data || []);
+          setError(null);
         } else {
-          setError(response?.data?.message || "Failed to fetch links.");
+          setError(response?.data?.message || "Failed to fetch users.");
         }
       } catch (err: any) {
         if (err.response?.status === 404) {
-          setError("Links not found.");
+          setError("users not found.");
         } else {
           setError("An unexpected error occurred.");
         }
@@ -75,7 +80,7 @@ export default function User() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h1 className="text-2xl font-bold mb-6">Link Details</h1>
-      {linkData.length > 0 ? (
+      {userData.length > 0 ? (
         <table className="table-auto border-collapse border border-gray-300 bg-white shadow-md rounded">
           <thead>
             <tr className="bg-gray-200">
@@ -84,20 +89,20 @@ export default function User() {
             </tr>
           </thead>
           <tbody>
-            {linkData.map((link: any, index) => (
+            {userData.map((user: any, index) => (
               <tr key={index} className="text-center">
                 <td className="border border-gray-300 px-4 py-2">
-                  {link.name}
+                  {user.name}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
-                  {link.email}
+                  {user.email}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p className="text-gray-700">No links found.</p>
+        <p className="text-gray-700">No users found.</p>
       )}
     </div>
   );

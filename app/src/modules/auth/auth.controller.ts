@@ -20,7 +20,7 @@ import {
 import { SignUpDto } from './dto/request/sign-up.dto';
 import { SignInDto } from './dto/request/sign-in.dto';
 import { RefreshTokenDto } from './dto/request/refresh-token.dto';
-import { SignUpResponse } from './dto/response/sign-up.dto';
+import { UserInfo } from './dto/response/sign-up.dto';
 import { SignInResponse } from './dto/response/sign-in.dto';
 import { RoleUpdate } from './dto/request/role.dto';
 import { hasRoles } from 'src/common/decorators/roles.decorator';
@@ -40,7 +40,7 @@ export class AuthController {
   @ApiOperation({ summary: Summary.SIGN_UP })
   @ApiResponse({ status: StatusCode.CREATED, description: SuccessMsg.SIGN_UP })
   @ApiBadRequestResponse({ description: ErrorMsg.INVALID_BODY })
-  async registerNewUser(@Body() body: SignUpDto): Promise<SignUpResponse> {
+  async registerNewUser(@Body() body: SignUpDto): Promise<UserInfo> {
     return await this.authService.signUp(body);
   }
 

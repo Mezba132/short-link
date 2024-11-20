@@ -1,5 +1,6 @@
 "use client";
 import api from "@/lib/api";
+import { EndPoint } from "@/utility/end-points";
 import { useState } from "react";
 
 export default function CreateLink() {
@@ -9,7 +10,11 @@ export default function CreateLink() {
     expiresAt?: string;
   };
 
-  type ResultState = {
+  type Alias = {
+    shortenedUrl: string;
+  } | null;
+
+  type CustomAlias = {
     shortenedUrl: string;
   } | null;
 
@@ -18,18 +23,23 @@ export default function CreateLink() {
     customAlias: undefined,
     expiresAt: undefined,
   });
-  const [result, setResult] = useState<ResultState>(null);
+  const [alias, setAlias] = useState<Alias>(null);
+  const [customAlias, setcustomAlias] = useState<CustomAlias>(null);
   const [copySuccess, setCopySuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const response = await api.post("/link/shorten", form);
-      console.log(response);
-      setResult({
+      const response = await api.post(EndPoint.SHORTEN_LINK, form);
+      setAlias({
         shortenedUrl: "http://localhost:5000/api/" + response.data.data.alias,
       });
+      if (response.data.data.customAlias) {
+        setcustomAlias({
+          shortenedUrl:
+            "http://localhost:5000/api/" + response.data.data.customAlias,
+        });
+      }
       setCopySuccess("");
     } catch (error) {
       console.error(error);
@@ -91,24 +101,41 @@ export default function CreateLink() {
             Create
           </button>
         </form>
-        {result && (
+        {alias && (
           <div className="mt-6 p-4 bg-gray-50 rounded shadow">
             <h3 className="text-lg font-bold mb-4">Your Shortened Link</h3>
             <div className="flex items-center justify-between bg-gray-200 p-3 rounded">
               <input
                 type="text"
                 readOnly
-                value={result.shortenedUrl}
+                value={alias.shortenedUrl}
                 className="bg-transparent text-blue-600 font-semibold w-full outline-none cursor-pointer"
-                onClick={() => handleCopy(result.shortenedUrl)}
+                onClick={() => handleCopy(alias.shortenedUrl)}
               />
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded ml-2 hover:bg-blue-600"
-                onClick={() => handleCopy(result.shortenedUrl)}
+                onClick={() => handleCopy(alias.shortenedUrl)}
               >
                 Copy
               </button>
             </div>
+            {customAlias && (
+              <div className="flex items-center justify-between bg-gray-200 p-3 rounded">
+                <input
+                  type="text"
+                  readOnly
+                  value={customAlias.shortenedUrl}
+                  className="bg-transparent text-blue-600 font-semibold w-full outline-none cursor-pointer"
+                  onClick={() => handleCopy(customAlias.shortenedUrl)}
+                />
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded ml-2 hover:bg-blue-600"
+                  onClick={() => handleCopy(customAlias.shortenedUrl)}
+                >
+                  Copy
+                </button>
+              </div>
+            )}
             {copySuccess && (
               <p className="text-green-500 text-sm mt-2">{copySuccess}</p>
             )}

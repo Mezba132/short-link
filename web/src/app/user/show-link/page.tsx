@@ -29,7 +29,7 @@ export default function ShowLink() {
         if (response?.data?.success) {
           console.log(response.data);
           setLinkData(response.data.data || []);
-          setError(null); // Clear any previous errors
+          setError(null);
         } else {
           setError(response?.data?.message || "Failed to fetch links.");
         }
@@ -104,11 +104,14 @@ export default function ShowLink() {
                 <td
                   className="border border-gray-300 px-4 py-2 cursor-pointer"
                   onClick={() =>
-                    navigator.clipboard.writeText(link.customAlias || "")
+                    navigator.clipboard.writeText(
+                      "http://localhost:5000/api/" + link.customAlias || ""
+                    )
                   }
                   title="Click to copy"
                 >
-                  {link.customAlias}
+                  {link.customAlias &&
+                    `http://localhost:5000/api/${link.customAlias}`}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
                   {new Date(link.expiresAt).toLocaleString()}

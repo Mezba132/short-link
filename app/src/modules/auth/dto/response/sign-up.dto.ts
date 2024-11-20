@@ -2,10 +2,10 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class SignUpResponse {
+export class UserInfo {
   @IsNotEmpty()
   @Type(() => Types.ObjectId)
-  id: Types.ObjectId;
+  _id: Types.ObjectId;
 
   @IsNotEmpty()
   @IsString()
