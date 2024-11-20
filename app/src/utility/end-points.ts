@@ -9,4 +9,5 @@ export class EndPoint {
   static LINK_BY_ALIAS = ':alias';
   static ALL_USERS = 'users/all';
   static SINGLE_USER = 'user/:id';
+  static TASK1 = 'task1/lastIndex';
 }

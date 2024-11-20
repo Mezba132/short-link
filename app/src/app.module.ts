@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CheckTokenMiddleware } from './common/middleware/check-token.middleware';
 import { UserModule } from './modules/user/user.module';
 import { EndPoint } from './utility/end-points';
+import { Task1Module } from './modules/task1/task1.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EndPoint } from './utility/end-points';
     AuthModule,
     LinkModule,
     UserModule,
+    Task1Module,
   ],
   controllers: [],
   providers: [],
@@ -33,6 +35,7 @@ export class AppModule implements NestModule {
         { path: EndPoint.REFRESH, method: RequestMethod.POST },
         { path: EndPoint.SHORTEN_LINK, method: RequestMethod.POST },
         { path: EndPoint.LINK_BY_ALIAS, method: RequestMethod.GET },
+        { path: EndPoint.TASK1, method: RequestMethod.GET },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
