@@ -8,8 +8,9 @@ import { LinkModule } from './modules/link/link.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
-import { CheckTokenMiddleware } from './middleware/checkToken.middleware';
+import { CheckTokenMiddleware } from './common/middleware/check-token.middleware';
 import { UserModule } from './modules/user/user.module';
+import { EndPoint } from './utility/end-points';
 
 @Module({
   imports: [
@@ -22,16 +23,16 @@ import { UserModule } from './modules/user/user.module';
   controllers: [],
   providers: [],
 })
-// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(CheckTokenMiddleware)
       .exclude(
-        { path: 'auth/register/new', method: RequestMethod.POST },
-        { path: 'auth/login', method: RequestMethod.POST },
-        { path: 'auth/refresh', method: RequestMethod.POST },
-        { path: 'link/shorten', method: RequestMethod.POST },
+        { path: EndPoint.SIGN_UP, method: RequestMethod.POST },
+        { path: EndPoint.SIGN_IN, method: RequestMethod.POST },
+        { path: EndPoint.REFRESH, method: RequestMethod.POST },
+        { path: EndPoint.SHORTEN_LINK, method: RequestMethod.POST },
+        { path: EndPoint.LINK_BY_ALIAS, method: RequestMethod.GET },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

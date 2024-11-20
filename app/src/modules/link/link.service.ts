@@ -1,14 +1,15 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Link } from '../../schemas/link.schema';
 import ShortUniqueId from 'short-unique-id';
 import { CreateLinkDto } from './dto/create-link.dto';
+import { ErrorMsg } from 'src/utility/custom-msg';
 
 @Injectable()
 export class LinkService {
@@ -23,8 +24,7 @@ export class LinkService {
     const alias = this.uid.rnd();
     customAlias = customAlias?.toLowerCase().replace(/ /g, '-');
 
-    const expiration =
-      expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expiration = expiresAt || new Date(Date.now() + 20 * 60 * 1000);
 
     const existingAlias = await this.linkModel.findOne({ alias }).exec();
     const existingCustomAlias = customAlias
@@ -32,15 +32,11 @@ export class LinkService {
       : undefined;
 
     if (existingAlias) {
-      throw new BadRequestException(
-        'Generated alias conflict. Please try again.',
-      );
+      throw new BadRequestException(ErrorMsg.LINK_ALREADY_EXIST);
     }
 
     if (existingCustomAlias) {
-      throw new BadRequestException(
-        'Custom alias already in use. Please choose another one.',
-      );
+      throw new BadRequestException(ErrorMsg.LINK_ALREADY_EXIST);
     }
 
     const link = new this.linkModel({
@@ -53,7 +49,7 @@ export class LinkService {
     try {
       return await link.save();
     } catch (error) {
-      if (error.name === 'ValidationError') {
+      if (error.name === ErrorMsg.VALIDATION_ERROR) {
         throw new BadRequestException(`Validation failed: ${error.message}`);
       }
       throw new Error(`Failed to save link: ${error.message}`);
@@ -67,30 +63,39 @@ export class LinkService {
           { alias: aliasOrCustomAlias },
           { customAlias: aliasOrCustomAlias },
         ],
+        expiresAt: { $gte: new Date() },
       })
       .exec();
 
     if (!link || new Date() > new Date(link.expiresAt)) {
-      throw new NotFoundException('Link not found or expired');
+      throw new NotFoundException(ErrorMsg.LINK_NOT_FOUND);
+    }
+
+    if (link.isPrivate) {
+      throw new UnauthorizedException(ErrorMsg.LINK_NOT_FOUND);
     }
 
     return link;
   };
 
-  getAllLinkByUser = async (id: string) => {
-    const links = await this.linkModel.find({ user: id }).exec();
+  getAllLinkByUser = async (id: string): Promise<Link[]> => {
+    const links = await this.linkModel
+      .find({ user: id, expiresAt: { $gte: new Date() } })
+      .exec();
 
     if (links.length === 0) {
-      throw new NotFoundException('Links not found');
+      throw new NotFoundException(ErrorMsg.LINK_NOT_FOUND);
     }
     return links;
   };
 
-  getAllLink = async () => {
-    const links = await this.linkModel.find({}).exec();
+  getAllLink = async (): Promise<Link[]> => {
+    const links = await this.linkModel
+      .find({ expiresAt: { $gte: new Date() } })
+      .exec();
 
     if (links.length === 0) {
-      throw new NotFoundException('Links not found');
+      throw new NotFoundException(ErrorMsg.LINK_NOT_FOUND);
     }
     return links;
   };
@@ -103,13 +108,14 @@ export class LinkService {
             { alias: aliasOrCustomAlias },
             { customAlias: aliasOrCustomAlias },
           ],
+          expiresAt: { $gte: new Date() },
         },
         { $inc: { visitCount: 1 } },
       )
       .exec();
 
     if (result.matchedCount === 0) {
-      throw new NotFoundException('Alias not found');
+      throw new NotFoundException(ErrorMsg.ALIAS_NOT_FOUND);
     }
   };
 }

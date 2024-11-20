@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
@@ -15,13 +16,14 @@ export class CreateLinkDto {
     description: 'The original URL to be shortened',
     example: 'https://example.com',
   })
+  @IsNotEmpty()
   @IsUrl()
   @IsString()
   originalUrl: string;
 
   @ApiPropertyOptional({
     description: 'A custom alias for the shortened URL',
-    example: 'example123',
+    example: 'Short link 123',
     minLength: 3,
     maxLength: 20,
   })
@@ -30,26 +32,18 @@ export class CreateLinkDto {
   @Length(3, 20)
   customAlias?: string;
 
-  @ApiPropertyOptional({
-    description: 'The expiration date of the shortened URL (ISO 8601 format)',
-    example: '2024-12-01T00:00:00.000Z',
-  })
   @IsOptional()
   @IsDateString()
   expiresAt?: Date;
 
   @ApiProperty({
-    example: '67399e9c7517693c171697e6',
+    example: '673c9f95a8e73a7d3c9424b8',
     required: true,
   })
   @IsOptional()
   @Type(() => Types.ObjectId)
   user?: Types.ObjectId;
 
-  @ApiPropertyOptional({
-    description: 'Whether the link should be private',
-    example: false,
-  })
   @IsOptional()
   @IsBoolean()
   isPrivate?: boolean;

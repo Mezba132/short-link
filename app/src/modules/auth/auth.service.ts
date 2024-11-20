@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
   UnauthorizedException,
@@ -13,6 +14,8 @@ import { SignUpDto } from './dto/request/sign-up.dto';
 import { SignUpResponse } from './dto/response/sign-up.dto';
 import { SignInResponse } from './dto/response/sign-in.dto';
 import { RefreshTokenDto } from './dto/request/refresh-token.dto';
+import { RoleUpdate } from './dto/request/role.dto';
+import { ErrorMsg } from 'src/utility/custom-msg';
 const bcrypt = require('bcryptjs');
 
 @Injectable()
@@ -35,11 +38,12 @@ export class AuthService {
       .select('_id name email password')
       .exec();
 
-    if (!verifiedUser) throw new NotFoundException(`User ${email} Not Found`);
+    if (!verifiedUser) throw new NotFoundException(ErrorMsg.USER_NOT_FOUND);
 
     const passwordCheck = bcrypt.compareSync(password, verifiedUser.password);
 
-    if (!passwordCheck) throw new BadRequestException(`Password do not match`);
+    if (!passwordCheck)
+      throw new BadRequestException(ErrorMsg.PASSWORD_MATCH_FAILED);
 
     return {
       _id: verifiedUser._id as Types.ObjectId,
@@ -58,22 +62,21 @@ export class AuthService {
       .exec();
 
     if (verifyEmail) {
-      throw new NotAcceptableException(
-        `User ${verifyEmail.email} already exist`,
-      );
+      throw new NotAcceptableException(ErrorMsg.USER_ALREADY_EXIST);
     }
 
     const newUser = new this.authModel(body);
 
     try {
-      let { _id, name, email } = await newUser.save();
+      let { _id, name, email, role } = await newUser.save();
       return {
         id: _id as Types.ObjectId,
         name,
         email,
+        role,
       };
     } catch (error) {
-      if (error.name === 'ValidationError') {
+      if (error.name === ErrorMsg.VALIDATION_ERROR) {
         throw new BadRequestException(`Validation failed: ${error.message}`);
       }
       throw new Error(`Failed to SignUp: ${error.message}`);
@@ -92,7 +95,7 @@ export class AuthService {
         userInfo: body.data,
       };
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(ErrorMsg.UNATHORIZED_USER);
     }
   };
 
@@ -101,14 +104,24 @@ export class AuthService {
     email: string;
     name: string;
   }): Promise<{ accessToken: string; refreshToken: string }> {
-    let { _id, name, email } = user;
+    const { _id, name, email } = user;
     const payload = { email, _id, name };
-    const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-    await this.authModel.findByIdAndUpdate(_id, { refreshToken });
-    console.log('accessToken - ', accessToken);
-    console.log('refreshToken - ', refreshToken);
-    return { accessToken, refreshToken };
+    try {
+      const accessToken = this.jwtService.sign(payload);
+      const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+      const updateResult = await this.authModel.findByIdAndUpdate(_id, {
+        refreshToken,
+      });
+      if (!updateResult) {
+        throw new NotFoundException(ErrorMsg.REFRESH_UPDATE_FAILED);
+      }
+      return { accessToken, refreshToken };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(ErrorMsg.FAILED_GENERATE_TOKEN);
+    }
   }
 
   async refreshTokens(
@@ -120,13 +133,12 @@ export class AuthService {
       })
       .exec();
 
-    if (!user) throw new UnauthorizedException('Refresh Token Not Valid');
+    if (!user) throw new UnauthorizedException(ErrorMsg.TOKEN_INVALID);
     let data = {
       _id: user._id as Types.ObjectId,
       name: user.name,
       email: user.email,
     };
-    console.log('refresh token calling......');
     return this.generateTokens(data);
   }
 
@@ -134,7 +146,22 @@ export class AuthService {
     try {
       return await this.jwtService.verify(jwt);
     } catch (error) {
-      throw new UnauthorizedException('JWT verification failed');
+      throw new UnauthorizedException(ErrorMsg.VERIFICATION_FAILED);
+    }
+  };
+
+  updateUserRole = async ({ id, role }: RoleUpdate) => {
+    try {
+      let result = await this.authModel.findByIdAndUpdate(
+        id,
+        { $set: { role } },
+        { new: true },
+      );
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error updating user role: ${error.message}`,
+      );
     }
   };
 }

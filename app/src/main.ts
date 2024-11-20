@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import 'dotenv/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { CustomResponseInterceptor } from './common/globalInterceptor';
-import { GlobalExceptionFilter } from './common/globalExceptionFilter';
+import { CustomResponseInterceptor } from './common/global-interceptor';
+import { GlobalExceptionFilter } from './common/global-exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
