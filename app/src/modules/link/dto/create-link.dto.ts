@@ -13,8 +13,8 @@ import { Types } from 'mongoose';
 
 export class CreateLinkDto {
   @ApiProperty({
-    description: 'The original URL to be shortened',
     example: 'https://example.com',
+    required: true,
   })
   @IsNotEmpty()
   @IsUrl()
@@ -22,8 +22,8 @@ export class CreateLinkDto {
   originalUrl: string;
 
   @ApiPropertyOptional({
-    description: 'A custom alias for the shortened URL',
     example: 'Short link 123',
+    required: false,
     minLength: 3,
     maxLength: 20,
   })
@@ -38,7 +38,7 @@ export class CreateLinkDto {
 
   @ApiProperty({
     example: '673c9f95a8e73a7d3c9424b8',
-    required: true,
+    required: false,
   })
   @IsOptional()
   @Type(() => Types.ObjectId)

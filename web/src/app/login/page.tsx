@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { setTokens } from "@/lib/auth";
 import { EndPoint } from "@/utility/end-points";
 
-export default function LoginPage() {
+const LoginPage = () => {
   type FormState = {
     email: string;
     password: string;
@@ -92,4 +92,6 @@ export default function LoginPage() {
       </form>
     </div>
   );
-}
+};
+
+export default LoginPage;

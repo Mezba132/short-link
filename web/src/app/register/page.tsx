@@ -4,7 +4,7 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { EndPoint } from "@/utility/end-points";
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   type FormState = {
     name: string;
     email: string;
@@ -75,4 +75,6 @@ export default function RegisterPage() {
       </form>
     </div>
   );
-}
+};
+
+export default RegisterPage;

@@ -3,7 +3,7 @@ import api from "@/lib/api";
 import { EndPoint } from "@/utility/end-points";
 import { useState } from "react";
 
-export default function CreateLink() {
+const CreateLink = () => {
   type FormState = {
     originalUrl: string;
     customAlias?: string;
@@ -144,4 +144,6 @@ export default function CreateLink() {
       </div>
     </div>
   );
-}
+};
+
+export default CreateLink;

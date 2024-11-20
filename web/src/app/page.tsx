@@ -1,4 +1,4 @@
-export default function Home() {
+const Home = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Short Link!</h1>
@@ -31,4 +31,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

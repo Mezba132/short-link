@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { EndPoint } from "@/utility/end-points";
 
-export default function User() {
+const User = () => {
   const router = useRouter();
   const [userData, setUserData] = useState([]);
   const [error, setError] = useState<string | null>(null);
@@ -105,4 +105,6 @@ export default function User() {
       )}
     </div>
   );
-}
+};
+
+export default User;

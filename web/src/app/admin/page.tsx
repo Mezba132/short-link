@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
+const AdminPage = () => {
   redirect("/admin/create-link");
-}
+};
+
+export default AdminPage;

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { removeTokens } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
-export default function LogoutPage() {
+const LogoutPage = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -12,4 +12,6 @@ export default function LogoutPage() {
   }, [router]);
 
   return null;
-}
+};
+
+export default LogoutPage;

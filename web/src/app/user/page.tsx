@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
+const UserPage = () => {
   redirect("/user/create-link");
-}
+};
+
+export default UserPage;

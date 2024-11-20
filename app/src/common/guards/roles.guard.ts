@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
+import { ErrorMsg } from 'src/utility/custom-msg';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -35,7 +36,7 @@ export class RolesGuard implements CanActivate {
       const hasRole = roles.includes(userRole);
 
       if (!hasRole) {
-        throw new UnauthorizedException('You are Not Authorized');
+        throw new UnauthorizedException(ErrorMsg.UNATHORIZED_USER);
       }
 
       return hasRole;

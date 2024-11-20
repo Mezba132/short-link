@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { EndPoint } from "@/utility/end-points";
 
-export default function ShowLink() {
+const ShowLink = () => {
   const router = useRouter();
   const [linkData, setLinkData] = useState([]);
   const [error, setError] = useState<string | null>(null);
@@ -136,4 +136,6 @@ export default function ShowLink() {
       )}
     </div>
   );
-}
+};
+
+export default ShowLink;

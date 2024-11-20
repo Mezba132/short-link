@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { EndPoint } from "@/utility/end-points";
 
-export default function CreateLink() {
+const CreateLink = () => {
   type FormState = {
     originalUrl: string;
     customAlias?: string;
@@ -187,4 +187,6 @@ export default function CreateLink() {
       </div>
     </div>
   );
-}
+};
+
+export default CreateLink;

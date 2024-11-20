@@ -2,7 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '../../modules/auth/auth.service';
-import { Types } from 'mongoose';
+import { UserInfo } from 'src/modules/auth/dto/response/sign-up.dto';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -17,7 +17,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     password: string,
   ): Promise<{
     success: boolean;
-    data?: { _id: Types.ObjectId; email: string; name: string; role: string };
+    data?: UserInfo;
   }> {
     let user = await this.authService.validateUser(email, password);
     return {

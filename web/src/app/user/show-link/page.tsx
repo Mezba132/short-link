@@ -4,7 +4,7 @@ import { getUserId, isAuthenticated } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ShowLink() {
+const ShowLink = () => {
   const router = useRouter();
   const [linkData, setLinkData] = useState([]);
   const [error, setError] = useState<string | null>(null);
@@ -130,4 +130,6 @@ export default function ShowLink() {
       )}
     </div>
   );
-}
+};
+
+export default ShowLink;

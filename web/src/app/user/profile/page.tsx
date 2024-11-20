@@ -4,7 +4,7 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getUserId, isAuthenticated } from "@/lib/auth";
 
-export default function profile() {
+const Profile = () => {
   const [userInfo, setUserInfo] = useState({ _id: "", name: "", email: "" });
   const router = useRouter();
 
@@ -56,4 +56,6 @@ export default function profile() {
       </div>
     </div>
   );
-}
+};
+
+export default Profile;

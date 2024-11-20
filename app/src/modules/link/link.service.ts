@@ -24,7 +24,7 @@ export class LinkService {
     const alias = this.uid.rnd();
     customAlias = customAlias?.toLowerCase().replace(/ /g, '-');
 
-    const expiration = expiresAt || new Date(Date.now() + 20 * 60 * 1000);
+    const expiration = expiresAt || new Date(Date.now() + 30 * 60 * 1000);
 
     const existingAlias = await this.linkModel.findOne({ alias }).exec();
     const existingCustomAlias = customAlias
