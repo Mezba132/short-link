@@ -10,40 +10,42 @@ export default function ShowLink() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchLinks = async () => {
-      try {
-        if (!isAuthenticated()) {
-          router.push("/login");
-          return;
-        }
+  const checkAuth = async () => {
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+  };
 
-        const userId = getUserId();
-        if (!userId) {
-          setError("User is not authenticated.");
-          router.push("/login");
-          return;
-        }
-
-        const response = await api.get(`link/user/${userId}`);
-        if (response?.data?.success) {
-          console.log(response.data);
-          setLinkData(response.data.data || []);
-          setError(null);
-        } else {
-          setError(response?.data?.message || "Failed to fetch links.");
-        }
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          setError("Links not found.");
-        } else {
-          setError("An unexpected error occurred.");
-        }
-      } finally {
-        setLoading(false);
+  const fetchLinks = async () => {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        setError("User is not authenticated.");
+        router.push("/login");
+        return;
       }
-    };
 
+      const response = await api.get(`link/user/${userId}`);
+      if (response?.data?.success) {
+        setLinkData(response.data.data || []);
+        setError(null);
+      } else {
+        setError(response?.data?.message || "Failed to fetch links.");
+      }
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setError("Links not found.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
     fetchLinks();
   }, [router]);
 

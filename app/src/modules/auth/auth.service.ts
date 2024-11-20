@@ -150,7 +150,7 @@ export class AuthService {
     }
   };
 
-  updateUserRole = async ({ id, role }: RoleUpdate) => {
+  updateUserRole = async ({ id, role }: RoleUpdate): Promise<User> => {
     try {
       let result = await this.authModel.findByIdAndUpdate(
         id,

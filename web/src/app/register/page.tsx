@@ -1,12 +1,20 @@
 "use client";
-
 import React, { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { EndPoint } from "@/utility/end-points";
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  type FormState = {
+    name: string;
+    email: string;
+    password: string;
+  };
+  const [form, setForm] = useState<FormState>({
+    name: "",
+    email: "",
+    password: "",
+  });
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -35,15 +35,20 @@ export default function CreateLink() {
 
   const router = useRouter();
 
+  const checkAuth = async () => {
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+    let user = getUserId();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    setForm({ ...form, user: user });
+  };
+
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!isAuthenticated()) {
-        router.push("/login");
-        return;
-      }
-      let user = getUserId();
-      setForm({ ...form, user: user });
-    };
     checkAuth();
   }, [router]);
 
@@ -52,14 +57,16 @@ export default function CreateLink() {
 
     try {
       let response = await api.post(EndPoint.SHORTEN_LINK, form);
-      setAlias({
-        shortenedUrl: "http://localhost:5000/api/" + response.data.data.alias,
-      });
-      if (response.data.data.customAlias) {
-        setcustomAlias({
-          shortenedUrl:
-            "http://localhost:5000/api/" + response.data.data.customAlias,
+      if (response?.data?.success) {
+        setAlias({
+          shortenedUrl: "http://localhost:5000/api/" + response.data.data.alias,
         });
+        if (response.data.data.customAlias) {
+          setcustomAlias({
+            shortenedUrl:
+              "http://localhost:5000/api/" + response.data.data.customAlias,
+          });
+        }
       }
       setCopySuccess("");
     } catch (error) {

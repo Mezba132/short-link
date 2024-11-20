@@ -8,24 +8,33 @@ export default function profile() {
   const [userInfo, setUserInfo] = useState({ _id: "", name: "", email: "" });
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      if (!isAuthenticated()) {
-        router.push("/login");
-        return;
-      }
+  const checkAuth = async () => {
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+  };
 
-      try {
-        let userId = getUserId();
-        let user = await api.get(`user/${userId}`);
-        console.log("User here", user.data.data);
-        setUserInfo(user.data.data);
-      } catch (error) {
-        console.error(error);
-        router.push("/login");
+  const fetchUser = async () => {
+    let user = getUserId();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    try {
+      let response = await api.get(`user/${user}`);
+      if (response?.data?.success) {
+        setUserInfo(response.data.data);
       }
-    };
+    } catch (error) {
+      console.error(error);
+      router.push("/login");
+    }
+  };
+
+  useEffect(() => {
     checkAuth();
+    fetchUser();
   }, [router]);
 
   return (

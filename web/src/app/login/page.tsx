@@ -6,7 +6,11 @@ import { setTokens } from "@/lib/auth";
 import { EndPoint } from "@/utility/end-points";
 
 export default function LoginPage() {
-  const [form, setForm] = useState({
+  type FormState = {
+    email: string;
+    password: string;
+  };
+  const [form, setForm] = useState<FormState>({
     email: "johndoe@mail.com",
     password: "Password123!",
   });
