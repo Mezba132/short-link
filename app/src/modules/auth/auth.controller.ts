@@ -57,13 +57,13 @@ export class AuthController {
     throw new UnauthorizedException();
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ summary: Summary.UPDATE_ROLE })
   @ApiResponse({
     status: StatusCode.OK,
     description: SuccessMsg.UPDATE_ROLE,
   })
   @ApiBadRequestResponse({ description: ErrorMsg.INVALID_BODY })
-  @ApiBearerAuth()
   @Post(EndPoint.UPDATE_USER_ROLE)
   @hasRoles(Role.SUPER_ADMIN)
   @UseGuards(RolesGuard)

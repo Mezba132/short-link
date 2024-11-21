@@ -10,7 +10,7 @@ export class SignUpDto {
   name: string;
 
   @ApiProperty({
-    example: 'johndoe@example.com',
+    example: 'johndoe@mail.com',
   })
   @IsNotEmpty()
   @IsString()

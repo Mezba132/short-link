@@ -30,7 +30,6 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
-  @ApiBearerAuth()
   @ApiOperation({ summary: Summary.SHORTEN_LINK })
   @ApiResponse({
     status: StatusCode.CREATED,

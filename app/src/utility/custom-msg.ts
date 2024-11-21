@@ -2,12 +2,12 @@ export class Summary {
   static SIGN_UP = 'Create a new user';
   static SIGN_IN = 'User sign in';
   static UPDATE_REFRESH = 'Update access and refresh token';
-  static UPDATE_ROLE = 'Update signle user role';
+  static UPDATE_ROLE = 'Update signle user role (Only super_admin)';
   static SHORTEN_LINK = 'Shorten a URL';
   static REDIRECT_UNIQUE_ALIAS = 'Redirect to the original URL';
-  static ALL_LINKS = 'Fetch all link';
+  static ALL_LINKS = 'Fetch all link (Only admin, super_admin)';
   static LINKS_BY_USERID = 'Fetch all link by user id';
-  static ALL_USERS = 'Fetch all users';
+  static ALL_USERS = 'Fetch all users (Only admin, super_admin)';
   static SINGLE_USER = 'Fetch Single user';
 }
 
@@ -29,7 +29,7 @@ export class ErrorMsg {
   static TOKEN_REQUIRED = 'JWT token required';
   static TOKEN_EXPIRED = 'Token has expired';
   static TOKEN_INVALID = 'Invalid token';
-  static UNATHORIZED_USER = 'User Not logged In';
+  static UNATHORIZED_USER = 'Unathorized User';
   static TOKEN_EXPIRED_ERROR = 'TokenExpiredError';
   static JSON_WEB_TOKEN_ERROR = 'TokenExpiredError';
   static VERIFICATION_FAILED = 'JWT verification failed';
@@ -43,5 +43,3 @@ export class ErrorMsg {
   static LINK_NOT_FOUND = 'Link not found';
   static LINK_ALREADY_EXIST = 'Link already exist';
 }
-
-
